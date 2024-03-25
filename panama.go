@@ -3,6 +3,8 @@ package panama
 import (
     "strconv"
     "crypto/cipher"
+
+    "github.com/pedroalbanese/panama/internal/subtle"
 )
 
 const NULL = 0
@@ -51,6 +53,9 @@ func (this *panamaCipher) XORKeyStream(dst, src []byte) {
     }
     if len(dst) < len(src) {
         panic("cryptobin/panama: output smaller than input")
+    }
+    if subtle.InexactOverlap(dst[:len(src)], src) {
+        panic("cryptobin/panama: invalid buffer overlap")
     }
 
     var i int32
